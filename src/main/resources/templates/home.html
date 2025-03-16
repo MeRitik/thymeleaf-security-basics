@@ -1,10 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-    You are authenticated to see this page.
+    You are authenticated to see this page.<br>
+    User: <span sec:authentication="principal.username"></span> <br>
+    Authority: <span sec:authentication="principal.authorities"></span>
+
+<hr>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Logout">
+    </form>
 </body>
 </html>

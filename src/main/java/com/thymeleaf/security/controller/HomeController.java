@@ -24,4 +24,9 @@ public class HomeController {
     public String systems() {
         return "admin-page";
     }
+
+    @GetMapping("/access-denied")
+    public String accessDenied() {
+        return "access-denied";
+    }
 }

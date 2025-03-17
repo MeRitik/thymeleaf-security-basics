@@ -31,6 +31,9 @@ public class SecurityConfig {
                         .permitAll()
         ).logout(
                 LogoutConfigurer::permitAll
+        ).exceptionHandling(
+                exception -> exception
+                        .accessDeniedPage("/access-denied")
         );
 
         return http.build();

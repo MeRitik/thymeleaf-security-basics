@@ -6,10 +6,13 @@
     <title>Title</title>
 </head>
 <body>
-    You are authenticated to see this page.<br>
+<h1>Employee Home Page</h1>
+<br>
     User: <span sec:authentication="principal.username"></span> <br>
     Authority: <span sec:authentication="principal.authorities"></span>
-
+<HR>
+<p><a th:href="@{/leaders}">Leadership Meeting</a> (Only for Managers)</p>
+<p><a th:href="@{/systems}">Systems Conference</a> (Only for Admins)</p>
 <hr>
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Logout">

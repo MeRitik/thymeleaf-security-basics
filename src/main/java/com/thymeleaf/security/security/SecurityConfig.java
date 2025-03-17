@@ -9,7 +9,11 @@ import org.springframework.security.config.annotation.web.configurers.LogoutConf
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import javax.sql.DataSource;
 
 //@EnableMethodSecurity // For @PreAuthorize
 @Configuration
@@ -20,7 +24,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(
                 configurer ->
                         configurer
-                                .requestMatchers("/").hasRole("USER")
+                                .requestMatchers("/").hasRole("EMPLOYEE")
                                 .requestMatchers("/systems/**").hasRole("ADMIN")
                                 .requestMatchers("/leaders/**").hasRole("MANAGER")
                                 .anyRequest().authenticated()
@@ -40,25 +44,36 @@ public class SecurityConfig {
     }
 
     @Bean
-    public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-        UserDetails user1 = User.builder()
-                .username("john")
-                .password("{noop}cenaaa")
-                .authorities("ROLE_USER")
-                .build();
+    public UserDetailsManager userDetailsManager(DataSource dataSource) {
+        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager();
+        userDetailsManager.setDataSource(dataSource);
+        userDetailsManager.setUsersByUsernameQuery("select * from members where username=?");
+        userDetailsManager.setAuthoritiesByUsernameQuery("select * from roles where username=?");
 
-        UserDetails user2 = User.builder()
-                .username("emma")
-                .password("{noop}stones")
-                .authorities("ROLE_USER", "ROLE_MANAGER")
-                .build();
-
-        UserDetails user3 = User.builder()
-                .username("buble")
-                .password("{noop}michael")
-                .authorities("ROLE_USER", "ROLE_MANAGER", "ROLE_ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(user1, user2, user3);
+        return userDetailsManager;
     }
+
+
+//    @Bean
+//    public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
+//        UserDetails user1 = User.builder()
+//                .username("john")
+//                .password("{noop}cenaaa")
+//                .authorities("ROLE_USER")
+//                .build();
+//
+//        UserDetails user2 = User.builder()
+//                .username("emma")
+//                .password("{noop}stones")
+//                .authorities("ROLE_USER", "ROLE_MANAGER")
+//                .build();
+//
+//        UserDetails user3 = User.builder()
+//                .username("buble")
+//                .password("{noop}michael")
+//                .authorities("ROLE_USER", "ROLE_MANAGER", "ROLE_ADMIN")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user1, user2, user3);
+//    }
 }
